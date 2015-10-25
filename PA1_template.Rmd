@@ -1,0 +1,67 @@
+---
+title: "PA1_template"
+author: "Serena Kohli"
+date: "24 October 2015"
+output:
+  html_document:
+    pandoc_args: [
+      "+RTS", "-K64m",
+      "-RTS"
+    ]
+---
+
+```{r, echo=TRUE}
+library(knitr)
+library(lattice)
+data <- read.csv("activity.csv")
+as.data.frame(data)
+data_new <- data
+steps_per_day <- aggregate(data$steps ~ data$date,FUN=sum)
+colnames(steps_per_day) <- c("date","steps_per_day")
+data <- merge.data.frame(data, steps_per_day,by = "date",all=TRUE)
+hist(data$steps_per_day,ylab="Frequency",xlab="No of steps/day",main="Frequency of the no of steps/day")
+mean(data$steps,na.rm = TRUE)
+mean_steps_per_day <- aggregate(data$steps ~ data$date,FUN=mean)
+colnames(mean_steps_per_day) <- c("date","mean_steps_per_day")
+data <- merge.data.frame(data, mean_steps_per_day,by = "date",all=TRUE)
+median(data$steps,na.rm = TRUE)
+median_steps_per_day <- aggregate(data$steps ~ data$date,FUN=median)
+colnames(median_steps_per_day) <- c("date","median_steps_per_day")
+data <- merge.data.frame(data, median_steps_per_day,by = "date",all=TRUE)
+mean_per_interval <- aggregate(data$steps ~ data$interval,FUN=mean)
+colnames(mean_per_interval) <- c("interval","mean_per_interval")
+data <- merge.data.frame(data, mean_per_interval,by = "interval",all=TRUE)
+plot(x=data$interval,y=data$mean_per_interval,type = "l",xlab = "Intervals",ylab="Avg no of steps",main="Timeseries plot of intervals Vs Avg no of steps")   
+interval_max_mean_steps <- data[which.max(data$mean_per_interval),1]
+interval_max_mean_steps
+rows_with_NAs <- which(is.na(data$steps))
+no_of_rows_with_NAs <- length(rows_with_NAs)
+no_of_rows_with_NAs
+for (i in 1:no_of_rows_with_NAs)
+  data_new[i,1] <- data[i,7]
+steps_per_day_new <- aggregate(data_new$steps ~ data_new$date,FUN=sum)
+colnames(steps_per_day_new) <- c("date","steps_per_day_new")
+data_new <- merge.data.frame(data_new, steps_per_day_new,by = "date",all=TRUE)
+hist(data_new$steps_per_day_new,ylab="Frequency",xlab="No of steps/day",main="Frequency of the no of steps/day - NEW")
+mean(data_new$steps,na.rm = TRUE)
+mean_steps_per_day_new <- aggregate(data_new$steps ~ data_new$date,FUN=mean)
+colnames(mean_steps_per_day_new) <- c("date","mean_steps_per_day_new")
+data_new <- merge.data.frame(data_new, mean_steps_per_day_new,by = "date",all=TRUE)
+median(data_new$steps,na.rm = TRUE)
+median_steps_per_day_new <- aggregate(data_new$steps ~ data_new$date,FUN=median)
+colnames(median_steps_per_day_new) <- c("date","median_steps_per_day_new")
+data_new <- merge.data.frame(data_new, median_steps_per_day_new,by = "date",all=TRUE)
+data_new$weekday <- weekdays(as.Date(data_new$date))
+data_new$weekday[data_new$weekday=="Monday" | data_new$weekday=="Tuesday" | data_new$weekday=="Wednesday" | data_new$weekday=="Thursday" | data_new$weekday=="Friday"] <- "Weekday"
+data_new$weekday[data_new$weekday=="Saturday" | data_new$weekday=="Sunday"] <- "Weekend"
+steps_per_day_weekdays <- aggregate(data_new$steps ~ data_new$interval + data_new$weekday,FUN=mean)
+colnames(steps_per_day_weekdays) <- c("interval","weekday", "steps_per_day_weekdays")
+xyplot(steps_per_day_weekdays$steps_per_day_weekdays ~ steps_per_day_weekdays$interval | steps_per_day_weekdays$weekday, type = "l", group = steps_per_day_weekdays$weekday, layout = c(1,2), xlab = "Interval", ylab = "Number of steps")
+```
+ 
+Q1: Do these values differ from the estimates from the first part of the assignment? 
+A1: Yes, there are differences as the NA values have been replaced with valid numbers, and in the new dataframe were included in stead of being ignored.
+
+Q2: What is the impact of imputing missing data on the estimates of the total daily number of steps?
+A2: As according to the algorithm followed, the NA values were replaced with mean value across intervals which were on the lower side, thus, the overall mean went down, median was unimpacted due to the large no of zeros and on the subject of histograms - most of the histogram remained the same, the only part impacted were the frequencies for the left end buckets.
+A2: 
