@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 title: "PA1_template"
 author: "Serena Kohli"
 date: "24 October 2015"
@@ -65,3 +66,29 @@ A1: Yes, there are differences as the NA values have been replaced with valid nu
 Q2: What is the impact of imputing missing data on the estimates of the total daily number of steps?
 A2: As according to the algorithm followed, the NA values were replaced with mean value across intervals which were on the lower side, thus, the overall mean went down, median was unimpacted due to the large no of zeros and on the subject of histograms - most of the histogram remained the same, the only part impacted were the frequencies for the left end buckets.
 A2: 
+=======
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+
+
+
+## What is mean total number of steps taken per day?
+
+
+
+## What is the average daily activity pattern?
+
+
+
+## Imputing missing values
+
+
+
+## Are there differences in activity patterns between weekdays and weekends?
+>>>>>>> 80edf39c3bb508fee88e3394542f967dd3fd3270
